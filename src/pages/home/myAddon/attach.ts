@@ -20,7 +20,6 @@ export class MyAddon implements ITerminalAddon {
   public activate(terminal: Terminal): void {
     this._disposables.push(
       addSocketListener(this._socket, `${this._socket.id}`, (data) => {
-        console.log('[BUTTERFLY][14:25:13]', this._socket.id);
         terminal.write(typeof data === 'string' ? data : new Uint8Array(data));
       }),
     );
@@ -50,7 +49,7 @@ export class MyAddon implements ITerminalAddon {
     if (!this._socket.connected) {
       return;
     }
-    this._socket.emit('user_input',data);
+    this._socket.emit('user_input', data);
   }
 
   private _sendBinary(data: string): void {

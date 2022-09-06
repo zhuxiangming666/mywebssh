@@ -3,17 +3,17 @@ import { useEffect, useRef, useState } from 'react';
 
 export const useClientWHHook = () => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [szie, Szie] = useState<{
+  const [size, Size] = useState<{
     w: number;
     h: number;
   }>({ w: 0, h: 0 });
   useEffect(() => {
-    Szie({
+    Size({
       w: containerRef.current?.clientWidth || 0,
       h: containerRef.current?.clientHeight || 0,
     });
     const fn = debounce(() => {
-      Szie({
+      Size({
         w: containerRef.current?.clientWidth || 0,
         h: containerRef.current?.clientHeight || 0,
       });
@@ -24,5 +24,5 @@ export const useClientWHHook = () => {
     };
   }, []);
 
-  return { containerRef, szie };
+  return { containerRef, size };
 };
