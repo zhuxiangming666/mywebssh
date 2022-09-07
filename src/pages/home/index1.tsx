@@ -18,20 +18,24 @@ interface LoginModalProps {
 
 const handleLoginMsgError = (errMsg: LoginError) => {
   switch (errMsg) {
-  case LoginError.NETWORK_ERROR: return "请确保网络正常";
-  case LoginError.INVALID_CONFIG: return "请输入正确的信息";
-  case LoginError.TIMEOUT: return "连接ssh超时";
-  default: return '登录失败';
+    case LoginError.NETWORK_ERROR:
+      return '请确保网络正常';
+    case LoginError.INVALID_CONFIG:
+      return '请输入正确的信息';
+    case LoginError.TIMEOUT:
+      return '连接ssh超时';
+    default:
+      return '登录失败';
   }
-}
+};
 
 const LoginModal = ({ isShow, onSubmit }: LoginModalProps) => {
   const [form] = Form.useForm();
-  const [isLoading,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    if(!isShow) setIsLoading(false);
-  },[isShow])
+    if (!isShow) setIsLoading(false);
+  }, [isShow]);
 
   const login = async () => {
     setIsLoading(true);
@@ -53,10 +57,15 @@ const LoginModal = ({ isShow, onSubmit }: LoginModalProps) => {
           <Input />
         </Form.Item>
         <Form.Item label="密码：" name="password">
-          <Input type="password" />
+          <Input.Password />
         </Form.Item>
         <Form.Item>
-          <Button type="primary" style={{ width: '100%' }} onClick={login} loading={isLoading}>
+          <Button
+            type="primary"
+            style={{ width: '100%' }}
+            onClick={login}
+            loading={isLoading}
+          >
             登录
           </Button>
         </Form.Item>
@@ -66,15 +75,17 @@ const LoginModal = ({ isShow, onSubmit }: LoginModalProps) => {
 };
 const Home = () => {
   const sshRef = useRef<Socket>(null) as MutableRefObject<Socket>;
-  const termRef = useRef<YunFanTerminal>(null) as MutableRefObject<YunFanTerminal>;
+  const termRef = useRef<YunFanTerminal>(
+    null,
+  ) as MutableRefObject<YunFanTerminal>;
   const fitAddonRef = useRef<FitAddon>(null) as MutableRefObject<FitAddon>;
   const [isShow, setIsShow] = useState(true);
-  const [isReConnecting,setIsReConnecting] = useState(false);
+  const [isReConnecting, setIsReConnecting] = useState(false);
 
   const { containerRef, size } = useClientWHHook();
 
   useEffect(() => {
-    if(!containerRef.current) return;
+    if (!containerRef.current) return;
     termRef.current = new YunFanTerminal({
       container: containerRef.current,
       offLineEvent: (msg?: string) => {
@@ -88,24 +99,24 @@ const Home = () => {
             </div>
           ),
           okText: '确认',
-          okButtonProps:{
-            loading: isReConnecting
+          okButtonProps: {
+            loading: isReConnecting,
           },
           onOk: async () => {
-            if(!termRef.current) return;
+            if (!termRef.current) return;
             setIsReConnecting(true);
             const isConnect = await termRef.current?.reConnect();
-            if(!isConnect) return message.error('请确保网络正常,并刷新页面后');
+            if (!isConnect) return message.error('请确保网络正常,并刷新页面后');
             setIsShow(true);
             setIsReConnecting(false);
-          }
+          },
         });
-      }
+      },
     });
-    return ()=>{
+    return () => {
       termRef.current.destroy();
-    }
-  },[])
+    };
+  }, []);
 
   useEffect(() => {
     termRef.current.fitSize(size);
@@ -116,10 +127,10 @@ const Home = () => {
       const msg = await termRef.current.login({
         form,
         size,
-      })
-      if(!msg){
-        setIsShow(false)
-        return true
+      });
+      if (!msg) {
+        setIsShow(false);
+        return true;
       }
       message.error(handleLoginMsgError(msg));
       return false;

@@ -9,7 +9,7 @@ export default defineConfig({
   proxy: {
     '/ssh': {
       // target: 'http://10.81.138.205:30080/', // test
-      target: 'http://127.0.0.1:7001', // dev
+      target: 'http://127.0.0.1:8081', // dev
       ws: true,
       changeOrigin: true,
     },
